@@ -2,12 +2,12 @@ package app.flashlight.ui.main
 
 import android.util.DisplayMetrics
 import androidx.compose.foundation.lazy.LazyListState
-import app.flashlight.data.DataConstants
+import app.flashlight.core.DataConstants
 
 data class MainScreenState(
     val modes: List<Int> = DataConstants.MODES.toList(),
-    val selectedMode: Int = DataConstants.DEFAULT_MODE_ID,
-    val isEnabled: Boolean = false
+    val selectedMode: Int = DataConstants.DEFAULT_MODE,
+    val switchChecked: Boolean = false
 ) {
     companion object {
         // Maximum number of visible list items

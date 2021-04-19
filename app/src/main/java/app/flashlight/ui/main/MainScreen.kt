@@ -62,7 +62,7 @@ fun MainScreen(
                 lazyListState.setOnScrollFinishedListener { firstIndex, selectedMode ->
                     scope.launch {
                         lazyListState.animateScrollToItem(firstIndex)
-                        viewModel.modeSelected(selectedMode)
+                        viewModel.onModeSelected(selectedMode)
                     }
                 }
             }
@@ -73,8 +73,8 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Switch(
-                checked = viewState.isEnabled,
-                onCheckedChange = { viewModel.switchStateChanged(it) },
+                checked = viewState.switchChecked,
+                onCheckedChange = { viewModel.onSwitchCheckedChanged(it) },
                 modifier = Modifier
                     .scale(5f)
                     .rotate(270f)
