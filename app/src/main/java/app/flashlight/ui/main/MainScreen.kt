@@ -1,28 +1,33 @@
 package app.flashlight.ui.main
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.flashlight.R
 import app.flashlight.ui.SharedViewModel
 import app.flashlight.ui.main.MainScreenState.Companion.centralVisibleIndex
 import app.flashlight.ui.main.MainScreenState.Companion.getFirstIndex
 import app.flashlight.ui.main.MainScreenState.Companion.getItemSize
 import app.flashlight.ui.main.MainScreenState.Companion.setOnScrollFinishedListener
 import kotlinx.coroutines.launch
+
+private val SETTINGS_BUTTON_PADDING_TOP = 48.dp
+private val SETTINGS_BUTTON_SIZE = 48.dp
 
 @Composable
 fun MainScreen(
@@ -68,9 +73,27 @@ fun MainScreen(
             }
         }
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = SETTINGS_BUTTON_PADDING_TOP)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_settings),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                modifier = Modifier
+                    .size(SETTINGS_BUTTON_SIZE)
+                    .clickable { onSettingsClick.invoke() },
+            )
+        }
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_PADDING_TOP)
         ) {
             Switch(
                 checked = viewState.switchChecked,
