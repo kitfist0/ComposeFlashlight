@@ -17,6 +17,11 @@
         <entry key="../../../../layout/compose-model-1618170149144.xml" value="0.1" />
         <entry key="../../../../layout/compose-model-1618175055004.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.21574074074074073" />
+        <entry key="app/src/main/res/drawable/ic_twotone_copyright.xml" value="0.24074074074074073" />
+        <entry key="app/src/main/res/drawable/ic_twotone_github.xml" value="0.24074074074074073" />
+        <entry key="app/src/main/res/drawable/ic_twotone_grade.xml" value="0.24074074074074073" />
+        <entry key="app/src/main/res/drawable/ic_twotone_palette.xml" value="0.24074074074074073" />
+        <entry key="app/src/main/res/drawable/ic_twotone_settings.xml" value="0.24074074074074073" />
       </map>
     </option>
   </component>

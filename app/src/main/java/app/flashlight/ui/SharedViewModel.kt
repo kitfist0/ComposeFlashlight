@@ -39,6 +39,10 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun onSettingsItemClicked(itemKey: String) {
+        Log.d(TAG, "item $itemKey clicked")
+    }
+
     fun onModeSelected(mode: Int) = viewModelScope.launch {
         Log.d(TAG, "mode $mode selected")
         dataStoreManager.setMode(mode)

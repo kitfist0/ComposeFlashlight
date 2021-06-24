@@ -32,7 +32,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(SETTINGS_DEST) {
-                        SettingsScreen()
+                        SettingsScreen(
+                            viewModel = sharedViewModel,
+                        )
                     }
                 }
             }
