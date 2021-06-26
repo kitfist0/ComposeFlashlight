@@ -8,6 +8,7 @@ import app.flashlight.ui.base.BaseViewModel
 import app.flashlight.ui.main.MainScreenState
 import app.flashlight.ui.settings.KEY_GITHUB_ITEM
 import app.flashlight.ui.settings.KEY_LICENSE_ITEM
+import app.flashlight.ui.settings.KEY_THEME_ITEM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -52,6 +53,8 @@ class SharedViewModel @Inject constructor(
     fun onSettingsItemClicked(itemKey: String) {
         Log.d(TAG, "item $itemKey clicked")
         when (itemKey) {
+            KEY_THEME_ITEM ->
+                showMessage("In developing ʕ•ᴥ•ʔ")
             KEY_GITHUB_ITEM ->
                 startIntent(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB)))
             KEY_LICENSE_ITEM ->
