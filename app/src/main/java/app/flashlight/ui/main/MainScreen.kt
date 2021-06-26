@@ -80,7 +80,7 @@ fun MainScreen(
                 .padding(top = SETTINGS_BUTTON_PADDING_TOP)
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_settings),
+                painter = painterResource(R.drawable.ic_twotone_settings),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 modifier = Modifier
