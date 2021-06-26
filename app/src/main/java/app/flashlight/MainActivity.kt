@@ -1,9 +1,11 @@
 package app.flashlight
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,7 +13,10 @@ import app.flashlight.ui.SharedViewModel
 import app.flashlight.ui.main.MainScreen
 import app.flashlight.ui.settings.SettingsScreen
 import app.flashlight.ui.theme.ComposeFlashlightTheme
+import app.flashlight.ui.base.AppEvent
+import app.flashlight.ui.base.AppNavArgs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -22,27 +27,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val navController = rememberNavController()
+
             ComposeFlashlightTheme {
-                val navController = rememberNavController()
-                NavHost(navController, startDestination = MAIN_DEST) {
-                    composable(MAIN_DEST) {
+                NavHost(navController, startDestination = AppNavArgs.MAIN_DEST) {
+                    composable(AppNavArgs.MAIN_DEST) {
                         MainScreen(
                             viewModel = sharedViewModel,
-                            onSettingsClick = { navController.navigate(SETTINGS_DEST) },
+                            onSettingsClick = { sharedViewModel.onSettingsButtonClicked() },
                         )
                     }
-                    composable(SETTINGS_DEST) {
+                    composable(AppNavArgs.SETTINGS_DEST) {
                         SettingsScreen(
                             viewModel = sharedViewModel,
                         )
                     }
                 }
             }
-        }
-    }
 
-    companion object {
-        const val MAIN_DEST = "main"
-        const val SETTINGS_DEST = "settings"
+            lifecycleScope.launchWhenStarted {
+                sharedViewModel.events.collect { appEvent ->
+                    when (appEvent) {
+                        is AppEvent.StartIntent -> startActivity(appEvent.intent)
+                        is AppEvent.Navigate -> navController.navigate(appEvent.destination)
+                        is AppEvent.TextMessage ->Toast
+                            .makeText(this@MainActivity, appEvent.message, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
     }
 }

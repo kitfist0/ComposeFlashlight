@@ -1,21 +1,27 @@
 package app.flashlight.ui
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.flashlight.core.*
 import app.flashlight.core.DataStoreManager
+import app.flashlight.ui.base.BaseViewModel
 import app.flashlight.ui.main.MainScreenState
+import app.flashlight.ui.settings.KEY_GITHUB_ITEM
+import app.flashlight.ui.settings.KEY_LICENSE_ITEM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.content.Intent
+import android.net.Uri
+import app.flashlight.BuildConfig
+import app.flashlight.ui.base.AppNavArgs
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     private val flashlight: Flashlight,
-    private val dataStoreManager: DataStoreManager
-) : ViewModel() {
+    private val dataStoreManager: DataStoreManager,
+) : BaseViewModel() {
 
     // Holds our view state which the UI collects via [state]
     private val _mainScreenState = MutableStateFlow(MainScreenState())
@@ -39,8 +45,18 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun onSettingsButtonClicked() {
+        navigateTo(AppNavArgs.SETTINGS_DEST)
+    }
+
     fun onSettingsItemClicked(itemKey: String) {
         Log.d(TAG, "item $itemKey clicked")
+        when (itemKey) {
+            KEY_GITHUB_ITEM ->
+                startIntent(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB)))
+            KEY_LICENSE_ITEM ->
+                startIntent(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.LICENSE)))
+        }
     }
 
     fun onModeSelected(mode: Int) = viewModelScope.launch {
