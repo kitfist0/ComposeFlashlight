@@ -111,6 +111,7 @@ private fun SettingsScreenItem(
             )
             Text(
                 text = stringResource(titleRes),
+                color = MaterialTheme.colors.onSurface,
                 fontSize = 22.sp,
                 modifier = Modifier
                     .padding(8.dp)
