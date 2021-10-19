@@ -16,7 +16,7 @@ import javax.inject.Inject
 import android.content.Intent
 import android.net.Uri
 import app.flashlight.BuildConfig
-import app.flashlight.ui.base.AppNavArgs
+import app.flashlight.ui.base.NavDest
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
@@ -47,7 +47,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun onSettingsButtonClicked() {
-        navigateTo(AppNavArgs.SETTINGS_DEST)
+        navigateTo(NavDest.SETTINGS)
     }
 
     fun onSettingsItemClicked(itemKey: String) {

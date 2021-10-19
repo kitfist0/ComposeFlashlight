@@ -14,7 +14,7 @@ import app.flashlight.ui.main.MainScreen
 import app.flashlight.ui.settings.SettingsScreen
 import app.flashlight.ui.theme.ComposeFlashlightTheme
 import app.flashlight.ui.base.AppEvent
-import app.flashlight.ui.base.AppNavArgs
+import app.flashlight.ui.base.NavDest
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -30,14 +30,14 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             ComposeFlashlightTheme {
-                NavHost(navController, startDestination = AppNavArgs.MAIN_DEST) {
-                    composable(AppNavArgs.MAIN_DEST) {
+                NavHost(navController, startDestination = NavDest.MAIN.route) {
+                    composable(NavDest.MAIN.route) {
                         MainScreen(
                             viewModel = sharedViewModel,
                             onSettingsClick = { sharedViewModel.onSettingsButtonClicked() },
                         )
                     }
-                    composable(AppNavArgs.SETTINGS_DEST) {
+                    composable(NavDest.SETTINGS.route) {
                         SettingsScreen(
                             viewModel = sharedViewModel,
                         )
@@ -49,8 +49,8 @@ class MainActivity : ComponentActivity() {
                 sharedViewModel.events.collect { appEvent ->
                     when (appEvent) {
                         is AppEvent.StartIntent -> startActivity(appEvent.intent)
-                        is AppEvent.Navigate -> navController.navigate(appEvent.destination)
-                        is AppEvent.TextMessage ->Toast
+                        is AppEvent.Navigate -> navController.navigate(appEvent.destination.route)
+                        is AppEvent.TextMessage -> Toast
                             .makeText(this@MainActivity, appEvent.message, Toast.LENGTH_SHORT)
                             .show()
                     }

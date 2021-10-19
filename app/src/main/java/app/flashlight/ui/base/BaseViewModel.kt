@@ -12,7 +12,7 @@ abstract class BaseViewModel : ViewModel() {
     private val _events = MutableSharedFlow<AppEvent>()
     val events = _events.asSharedFlow()
 
-    fun navigateTo(destination: String) {
+    fun navigateTo(destination: NavDest) {
         invokeEvent(AppEvent.Navigate(destination))
     }
 
