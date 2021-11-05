@@ -1,6 +1,6 @@
-package app.flashlight.ui.base
+package app.flashlight.navigation
 
 enum class NavDest(val route: String) {
-    MAIN("main"),
+    HOME("home"),
     SETTINGS("settings"),
 }

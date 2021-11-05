@@ -1,6 +1,7 @@
-package app.flashlight.ui.base
+package app.flashlight.event
 
 import android.content.Intent
+import app.flashlight.navigation.NavDest
 
 sealed class AppEvent {
     data class Navigate(val destination: NavDest) : AppEvent()

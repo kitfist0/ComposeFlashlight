@@ -1,8 +1,10 @@
-package app.flashlight.ui.main
+package app.flashlight.ui.home
 
+import android.util.DisplayMetrics
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -19,26 +21,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.flashlight.R
-import app.flashlight.ui.SharedViewModel
-import app.flashlight.ui.main.MainScreenState.Companion.centralVisibleIndex
-import app.flashlight.ui.main.MainScreenState.Companion.getFirstIndex
-import app.flashlight.ui.main.MainScreenState.Companion.getItemSize
-import app.flashlight.ui.main.MainScreenState.Companion.setOnScrollFinishedListener
+import app.flashlight.core.DataConstants
 import kotlinx.coroutines.launch
 
+private const val MAX_NUM_OF_VISIBLE_ITEMS = 5
 private val SETTINGS_BUTTON_PADDING_TOP = 48.dp
 private val SETTINGS_BUTTON_SIZE = 48.dp
 
 @Composable
-fun MainScreen(
-    viewModel: SharedViewModel,
-    onSettingsClick: () -> Unit
-) {
+fun HomeScreen(viewModel: HomeViewModel) {
 
-    val viewState by viewModel.mainScreenState.collectAsState()
-    val items = CircularAdapter(viewState.modes.toList())
+    val state = viewModel.homeScreenState.collectAsState().value
+    val items = CircularAdapter(state.modes.toList())
     val itemSize = LocalContext.current.resources.displayMetrics.getItemSize()
-    val lazyListState = rememberLazyListState(viewState.getFirstIndex())
+    val lazyListState = rememberLazyListState(state.getFirstIndex())
     val scope = rememberCoroutineScope()
 
     Column(
@@ -85,7 +81,7 @@ fun MainScreen(
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 modifier = Modifier
                     .size(SETTINGS_BUTTON_SIZE)
-                    .clickable { onSettingsClick.invoke() },
+                    .clickable { viewModel.onSettingsButtonClicked() }
             )
         }
         Column(
@@ -96,7 +92,7 @@ fun MainScreen(
                 .padding(bottom = SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_PADDING_TOP)
         ) {
             Switch(
-                checked = viewState.switchChecked,
+                checked = state.switchChecked,
                 onCheckedChange = { viewModel.onSwitchCheckedChanged(it) },
                 modifier = Modifier
                     .scale(5f)
@@ -120,4 +116,22 @@ private class CircularAdapter(
     override fun listIterator(): ListIterator<Int> = content.listIterator()
     override fun listIterator(index: Int): ListIterator<Int> = content.listIterator(index)
     override fun subList(fromIndex: Int, toIndex: Int): List<Int> = content.subList(fromIndex, toIndex)
+}
+
+private var previousFirstItemIndex = -1
+
+private fun HomeScreenState.getFirstIndex() = Int.MAX_VALUE / 2 + selectedMode - 2
+
+private fun DisplayMetrics.getItemSize() = widthPixels / MAX_NUM_OF_VISIBLE_ITEMS / density
+
+private fun LazyListState.centralVisibleIndex() = firstVisibleItemIndex + MAX_NUM_OF_VISIBLE_ITEMS / 2
+
+private fun LazyListState.setOnScrollFinishedListener(
+    onScrollFinished: (firstIndex: Int, selectedMode: Int) -> Unit
+) {
+    if (!isScrollInProgress && previousFirstItemIndex != firstVisibleItemIndex) {
+        previousFirstItemIndex = firstVisibleItemIndex
+        val mode = centralVisibleIndex() % DataConstants.MODES.size
+        onScrollFinished.invoke(firstVisibleItemIndex, mode)
+    }
 }
