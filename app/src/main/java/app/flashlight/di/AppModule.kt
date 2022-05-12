@@ -3,7 +3,7 @@ package app.flashlight.di
 import android.app.Application
 import android.content.Context
 import android.hardware.camera2.CameraManager
-import app.flashlight.core.DataStoreManager
+import app.flashlight.data.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

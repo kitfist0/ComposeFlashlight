@@ -8,9 +8,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import app.flashlight.ui.theme.ComposeFlashlightTheme
-import app.flashlight.event.AppEvent
-import app.flashlight.event.EventManager
-import app.flashlight.navigation.NavGraph
+import app.flashlight.ui.event.AppEvent
+import app.flashlight.ui.event.EventManager
+import app.flashlight.ui.navigation.NavGraph
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package app.flashlight.core
+package app.flashlight.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey

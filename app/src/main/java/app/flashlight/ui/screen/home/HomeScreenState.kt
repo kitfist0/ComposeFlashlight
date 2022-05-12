@@ -1,6 +1,6 @@
-package app.flashlight.ui.home
+package app.flashlight.ui.screen.home
 
-import app.flashlight.core.DataConstants
+import app.flashlight.data.DataConstants
 
 data class HomeScreenState(
     val modes: List<Int> = DataConstants.MODES.toList(),

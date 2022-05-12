@@ -1,12 +1,12 @@
-package app.flashlight.navigation
+package app.flashlight.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.flashlight.ui.home.HomeScreen
-import app.flashlight.ui.settings.SettingsScreen
+import app.flashlight.ui.screen.home.HomeScreen
+import app.flashlight.ui.screen.settings.SettingsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {

@@ -2,6 +2,7 @@ package app.flashlight.core
 
 import android.hardware.camera2.CameraManager
 import android.util.Log
+import app.flashlight.data.DataConstants
 import app.flashlight.di.DefaultDispatcher
 import kotlinx.coroutines.*
 import javax.inject.Inject

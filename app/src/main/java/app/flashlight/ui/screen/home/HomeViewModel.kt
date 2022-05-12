@@ -1,11 +1,11 @@
-package app.flashlight.ui.home
+package app.flashlight.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.flashlight.core.*
-import app.flashlight.core.DataStoreManager
-import app.flashlight.event.EventManager
-import app.flashlight.navigation.NavDest
+import app.flashlight.data.DataStoreManager
+import app.flashlight.ui.event.EventManager
+import app.flashlight.ui.navigation.NavDest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

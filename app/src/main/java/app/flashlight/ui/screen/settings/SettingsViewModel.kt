@@ -1,4 +1,4 @@
-package app.flashlight.ui.settings
+package app.flashlight.ui.screen.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import app.flashlight.BuildConfig
 import app.flashlight.R
-import app.flashlight.event.EventManager
+import app.flashlight.ui.event.EventManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

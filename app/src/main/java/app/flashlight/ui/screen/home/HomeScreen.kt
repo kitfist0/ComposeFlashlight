@@ -1,4 +1,4 @@
-package app.flashlight.ui.home
+package app.flashlight.ui.screen.home
 
 import android.util.DisplayMetrics
 import androidx.compose.foundation.Image
@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.flashlight.R
-import app.flashlight.core.DataConstants
+import app.flashlight.data.DataConstants
 import kotlinx.coroutines.launch
 
 private const val MAX_NUM_OF_VISIBLE_ITEMS = 5

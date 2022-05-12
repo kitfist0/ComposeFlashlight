@@ -1,4 +1,4 @@
-package app.flashlight.ui.settings
+package app.flashlight.ui.screen.settings
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
