@@ -12,10 +12,6 @@ Compose flashlight is an app that attempts to use the latest cutting edge librar
  * Uses [Data Store](https://developer.android.com/topic/libraries/architecture/datastore) as data storage solution
  * Uses [Hilt](https://dagger.dev/hilt/) for dependency injection
 
-## Development setup
-
-First off, you require the latest Android Studio 4.2 Canary to be able to build the app. This is because the project is written in [Jetpack Compose](https://developer.android.com/jetpack/compose) (more on that below).
-
 ## Contributions
 
 If you've found an error in this sample, please file an issue.
