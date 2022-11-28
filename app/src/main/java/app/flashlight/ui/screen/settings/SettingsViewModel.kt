@@ -9,7 +9,7 @@ import app.flashlight.BuildConfig
 import app.flashlight.R
 import app.flashlight.ui.event.EventManager
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -22,8 +22,7 @@ class SettingsViewModel @Inject constructor(
             versionNameText = "ver.${BuildConfig.VERSION_NAME}",
         )
     )
-    val settingsScreenState: StateFlow<SettingsScreenState>
-        get() = _settingsScreenState
+    val settingsScreenState = _settingsScreenState.asStateFlow()
 
     fun onThemeItemClicked() {
         eventManager.showMessage("In developing ʕ•ᴥ•ʔ")

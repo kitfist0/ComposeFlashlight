@@ -19,8 +19,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _homeScreenState = MutableStateFlow(HomeScreenState())
-    val homeScreenState: StateFlow<HomeScreenState>
-        get() = _homeScreenState
+    val homeScreenState = _homeScreenState.asStateFlow()
 
     init {
         viewModelScope.launch {
