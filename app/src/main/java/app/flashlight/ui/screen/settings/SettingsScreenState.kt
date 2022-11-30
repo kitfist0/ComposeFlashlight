@@ -1,9 +1,13 @@
 package app.flashlight.ui.screen.settings
 
-import androidx.annotation.StringRes
+import app.flashlight.BuildConfig
+import app.flashlight.R
+import de.palm.composestateevents.StateEventWithContent
+import de.palm.composestateevents.consumed
 
 data class SettingsScreenState(
-    @StringRes
-    val titleStringRes: Int,
-    val versionNameText: String,
+    val titleStringRes: Int = R.string.app_name,
+    val versionNameText: String = "ver.${BuildConfig.VERSION_NAME}",
+    val longToastEvent: StateEventWithContent<String> = consumed(),
+    val viewIntentEvent: StateEventWithContent<String> = consumed(),
 )

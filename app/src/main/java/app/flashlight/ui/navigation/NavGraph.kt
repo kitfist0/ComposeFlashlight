@@ -12,7 +12,7 @@ import app.flashlight.ui.screen.settings.SettingsScreen
 fun NavGraph(navController: NavHostController) {
     NavHost(navController, startDestination = NavDest.HOME.route) {
         composable(NavDest.HOME.route) {
-            HomeScreen(hiltViewModel())
+            HomeScreen(navController, hiltViewModel())
         }
         composable(NavDest.SETTINGS.route) {
             SettingsScreen(hiltViewModel())

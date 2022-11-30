@@ -20,8 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import app.flashlight.R
 import app.flashlight.data.DataConstants
+import de.palm.composestateevents.EventEffect
 import kotlinx.coroutines.launch
 
 private const val MAX_NUM_OF_VISIBLE_ITEMS = 5
@@ -29,12 +31,13 @@ private val SETTINGS_BUTTON_PADDING_TOP = 48.dp
 private val SETTINGS_BUTTON_SIZE = 48.dp
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
 
-    val state = viewModel.homeScreenState.collectAsState().value
-    val items = CircularAdapter(state.modes.toList())
+    val screenState: HomeScreenState by viewModel.screenState.collectAsState()
+
+    val items = CircularAdapter(screenState.modes.toList())
     val itemSize = LocalContext.current.resources.displayMetrics.getItemSize()
-    val lazyListState = rememberLazyListState(state.getFirstIndex())
+    val lazyListState = rememberLazyListState(screenState.getFirstIndex())
     val scope = rememberCoroutineScope()
 
     Column(
@@ -92,13 +95,21 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 .padding(bottom = SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_PADDING_TOP)
         ) {
             Switch(
-                checked = state.switchChecked,
+                checked = screenState.switchChecked,
                 onCheckedChange = { viewModel.onSwitchCheckedChanged(it) },
                 modifier = Modifier
                     .scale(5f)
                     .rotate(270f)
             )
         }
+    }
+
+    // Events
+    EventEffect(
+        event = screenState.navigationEvent,
+        onConsumed = viewModel::onConsumedNavigationEvent,
+    ) {
+        navController.navigate(it.route)
     }
 }
 

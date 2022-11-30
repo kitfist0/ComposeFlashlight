@@ -1,5 +1,8 @@
 package app.flashlight.ui.screen.settings
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -11,19 +14,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.flashlight.R
+import de.palm.composestateevents.EventEffect
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
 
-    val state = viewModel.settingsScreenState.collectAsState().value
+    val screenState: SettingsScreenState by viewModel.screenState.collectAsState()
 
     LazyColumn {
         item {
@@ -34,12 +40,12 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(state.titleStringRes),
+                    text = stringResource(screenState.titleStringRes),
                     fontSize = 22.sp,
                     color = MaterialTheme.colors.onBackground,
                 )
                 Text(
-                    text = state.versionNameText,
+                    text = screenState.versionNameText,
                     fontSize = 16.sp,
                     color = MaterialTheme.colors.onBackground,
                 )
@@ -69,6 +75,21 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                 onClick = { viewModel.onLicenseItemClicked() },
             )
         }
+    }
+
+    // Events
+    val context = LocalContext.current
+    EventEffect(
+        event = screenState.viewIntentEvent,
+        onConsumed = viewModel::onConsumedViewIntentEvent,
+    ) {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+    }
+    EventEffect(
+        event = screenState.longToastEvent,
+        onConsumed = viewModel::onConsumedToastEvent,
+    ) {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
 }
 
