@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.flashlight.R
@@ -31,7 +32,38 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
     val screenState: SettingsScreenState by viewModel.screenState.collectAsState()
 
-    LazyColumn {
+    SettingsScreenContent(
+        screenState = screenState,
+        onThemeItemClicked = { viewModel.onThemeItemClicked() },
+        onGitHubItemClicked = { viewModel.onGitHubItemClicked() },
+        onLicenseItemClicked = { viewModel.onLicenseItemClicked() },
+    )
+
+    val context = LocalContext.current
+    EventEffect(
+        event = screenState.viewIntentEvent,
+        onConsumed = viewModel::onConsumedViewIntentEvent,
+    ) {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+    }
+    EventEffect(
+        event = screenState.longToastEvent,
+        onConsumed = viewModel::onConsumedToastEvent,
+    ) {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+}
+
+@Composable
+private fun SettingsScreenContent(
+    screenState: SettingsScreenState,
+    onThemeItemClicked: () -> Unit,
+    onGitHubItemClicked: () -> Unit,
+    onLicenseItemClicked: () -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
         item {
             Column(
                 modifier = Modifier
@@ -56,7 +88,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             SettingsScreenItem(
                 titleRes = R.string.theme,
                 iconRes = R.drawable.ic_twotone_palette,
-                onClick = { viewModel.onThemeItemClicked() },
+                onClick = { onThemeItemClicked() },
             )
         }
 
@@ -64,7 +96,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             SettingsScreenItem(
                 titleRes = R.string.github,
                 iconRes = R.drawable.ic_twotone_github,
-                onClick = { viewModel.onGitHubItemClicked() },
+                onClick = { onGitHubItemClicked() },
             )
         }
 
@@ -72,24 +104,9 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             SettingsScreenItem(
                 titleRes = R.string.copyright,
                 iconRes = R.drawable.ic_twotone_copyright,
-                onClick = { viewModel.onLicenseItemClicked() },
+                onClick = { onLicenseItemClicked() },
             )
         }
-    }
-
-    // Events
-    val context = LocalContext.current
-    EventEffect(
-        event = screenState.viewIntentEvent,
-        onConsumed = viewModel::onConsumedViewIntentEvent,
-    ) {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
-    }
-    EventEffect(
-        event = screenState.longToastEvent,
-        onConsumed = viewModel::onConsumedToastEvent,
-    ) {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
 }
 
@@ -128,4 +145,15 @@ private fun SettingsScreenItem(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenPreview() {
+    SettingsScreenContent(
+        screenState = SettingsScreenState(),
+        onThemeItemClicked = {},
+        onGitHubItemClicked = {},
+        onLicenseItemClicked = {},
+    )
 }

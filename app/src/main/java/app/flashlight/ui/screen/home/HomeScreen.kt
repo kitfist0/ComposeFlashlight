@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -35,7 +36,29 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
 
     val screenState: HomeScreenState by viewModel.screenState.collectAsState()
 
-    val items = CircularAdapter(screenState.modes.toList())
+    HomeScreenContent(
+        screenState = screenState,
+        onModeSelected = { mode -> viewModel.onModeSelected(mode) },
+        onSettingsClicked = { viewModel.onSettingsButtonClicked() },
+        onSwitchCheckedChanged = { checked -> viewModel.onSwitchCheckedChanged(checked) },
+    )
+
+    EventEffect(
+        event = screenState.navigationEvent,
+        onConsumed = viewModel::onConsumedNavigationEvent,
+    ) {
+        navController.navigate(it.route)
+    }
+}
+
+@Composable
+private fun HomeScreenContent(
+    screenState: HomeScreenState,
+    onModeSelected: suspend (Int) -> Unit,
+    onSettingsClicked: () -> Unit,
+    onSwitchCheckedChanged: (Boolean) -> Unit,
+) {
+    val items = CircularAdapter(screenState.modes)
     val itemSize = LocalContext.current.resources.displayMetrics.getItemSize()
     val lazyListState = rememberLazyListState(screenState.getFirstIndex())
     val scope = rememberCoroutineScope()
@@ -66,7 +89,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
                 lazyListState.setOnScrollFinishedListener { firstIndex, selectedMode ->
                     scope.launch {
                         lazyListState.animateScrollToItem(firstIndex)
-                        viewModel.onModeSelected(selectedMode)
+                        onModeSelected(selectedMode)
                     }
                 }
             }
@@ -84,7 +107,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 modifier = Modifier
                     .size(SETTINGS_BUTTON_SIZE)
-                    .clickable { viewModel.onSettingsButtonClicked() }
+                    .clickable { onSettingsClicked() }
             )
         }
         Column(
@@ -96,21 +119,24 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
         ) {
             Switch(
                 checked = screenState.switchChecked,
-                onCheckedChange = { viewModel.onSwitchCheckedChanged(it) },
+                onCheckedChange = { checked -> onSwitchCheckedChanged(checked) },
                 modifier = Modifier
                     .scale(5f)
                     .rotate(270f)
             )
         }
     }
+}
 
-    // Events
-    EventEffect(
-        event = screenState.navigationEvent,
-        onConsumed = viewModel::onConsumedNavigationEvent,
-    ) {
-        navController.navigate(it.route)
-    }
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreenContent(
+        screenState = HomeScreenState(),
+        onModeSelected = {},
+        onSettingsClicked = {},
+        onSwitchCheckedChanged = {},
+    )
 }
 
 private class CircularAdapter(
@@ -126,7 +152,8 @@ private class CircularAdapter(
     override fun lastIndexOf(element: Int): Int = content.lastIndexOf(element)
     override fun listIterator(): ListIterator<Int> = content.listIterator()
     override fun listIterator(index: Int): ListIterator<Int> = content.listIterator(index)
-    override fun subList(fromIndex: Int, toIndex: Int): List<Int> = content.subList(fromIndex, toIndex)
+    override fun subList(fromIndex: Int, toIndex: Int): List<Int> =
+        content.subList(fromIndex, toIndex)
 }
 
 private var previousFirstItemIndex = -1
@@ -135,7 +162,8 @@ private fun HomeScreenState.getFirstIndex() = Int.MAX_VALUE / 2 + selectedMode -
 
 private fun DisplayMetrics.getItemSize() = widthPixels / MAX_NUM_OF_VISIBLE_ITEMS / density
 
-private fun LazyListState.centralVisibleIndex() = firstVisibleItemIndex + MAX_NUM_OF_VISIBLE_ITEMS / 2
+private fun LazyListState.centralVisibleIndex() =
+    firstVisibleItemIndex + MAX_NUM_OF_VISIBLE_ITEMS / 2
 
 private fun LazyListState.setOnScrollFinishedListener(
     onScrollFinished: (firstIndex: Int, selectedMode: Int) -> Unit
