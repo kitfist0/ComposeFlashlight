@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.flashlight.R
 import de.palm.composestateevents.EventEffect
 
 @Composable
@@ -34,9 +33,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
     SettingsScreenContent(
         screenState = screenState,
-        onThemeItemClicked = { viewModel.onThemeItemClicked() },
-        onGitHubItemClicked = { viewModel.onGitHubItemClicked() },
-        onLicenseItemClicked = { viewModel.onLicenseItemClicked() },
+        onItemClicked = { item -> viewModel.onSettingsItemClicked(item) },
     )
 
     val context = LocalContext.current
@@ -57,9 +54,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 @Composable
 private fun SettingsScreenContent(
     screenState: SettingsScreenState,
-    onThemeItemClicked: () -> Unit,
-    onGitHubItemClicked: () -> Unit,
-    onLicenseItemClicked: () -> Unit,
+    onItemClicked: (SettingsItem) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -84,28 +79,14 @@ private fun SettingsScreenContent(
             }
         }
 
-        item {
-            SettingsScreenItem(
-                titleRes = R.string.theme,
-                iconRes = R.drawable.ic_twotone_palette,
-                onClick = { onThemeItemClicked() },
-            )
-        }
-
-        item {
-            SettingsScreenItem(
-                titleRes = R.string.github,
-                iconRes = R.drawable.ic_twotone_github,
-                onClick = { onGitHubItemClicked() },
-            )
-        }
-
-        item {
-            SettingsScreenItem(
-                titleRes = R.string.copyright,
-                iconRes = R.drawable.ic_twotone_copyright,
-                onClick = { onLicenseItemClicked() },
-            )
+        for (settingsItem in SettingsItem.values()) {
+            item {
+                SettingsScreenItem(
+                    titleRes = settingsItem.titleRes,
+                    iconRes = settingsItem.iconRes,
+                    onClick = { onItemClicked(settingsItem) },
+                )
+            }
         }
     }
 }
@@ -152,8 +133,6 @@ private fun SettingsScreenItem(
 fun SettingsScreenPreview() {
     SettingsScreenContent(
         screenState = SettingsScreenState(),
-        onThemeItemClicked = {},
-        onGitHubItemClicked = {},
-        onLicenseItemClicked = {},
+        onItemClicked = {},
     )
 }
