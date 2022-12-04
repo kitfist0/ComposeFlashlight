@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -61,36 +62,24 @@ private fun HomeScreenContent(
     val items = CircularAdapter(screenState.modes)
     val itemSize = LocalContext.current.resources.displayMetrics.getItemSize()
     val lazyListState = rememberLazyListState(screenState.getFirstIndex())
+    val centralIndex = lazyListState.centralVisibleIndex()
     val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyRow(state = lazyListState) {
-            itemsIndexed(items) { ind, item ->
-                Card(
-                    shape = RoundedCornerShape(0.dp),
-                    backgroundColor = MaterialTheme.colors.surface,
-                    modifier = Modifier
-                        .width(itemSize.dp)
-                        .height(itemSize.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceEvenly,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = item.toString(),
-                            fontSize = if (ind == lazyListState.centralVisibleIndex()) 24.sp else 20.sp
-                        )
-                    }
-                }
-                lazyListState.setOnScrollFinishedListener { firstIndex, selectedMode ->
-                    scope.launch {
-                        lazyListState.animateScrollToItem(firstIndex)
-                        onModeSelected(selectedMode)
-                    }
+            itemsIndexed(items) { index, item ->
+                HomeScreenItem(
+                    itemSize = itemSize,
+                    itemTitle = item.toString(),
+                    isCentralItem = index == centralIndex,
+                )
+            }
+            lazyListState.setOnScrollFinishedListener { firstIndex, selectedMode ->
+                scope.launch {
+                    lazyListState.animateScrollToItem(firstIndex)
+                    onModeSelected(selectedMode)
                 }
             }
         }
@@ -128,6 +117,32 @@ private fun HomeScreenContent(
     }
 }
 
+@Composable
+private fun HomeScreenItem(
+    itemSize: Size,
+    itemTitle: String,
+    isCentralItem: Boolean,
+) {
+    Card(
+        shape = RoundedCornerShape(0.dp),
+        backgroundColor = MaterialTheme.colors.surface,
+        modifier = Modifier
+            .width(itemSize.width.dp)
+            .height(itemSize.height.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = itemTitle,
+                fontSize = if (isCentralItem) 24.sp else 20.sp
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -160,7 +175,10 @@ private var previousFirstItemIndex = -1
 
 private fun HomeScreenState.getFirstIndex() = Int.MAX_VALUE / 2 + selectedMode - 2
 
-private fun DisplayMetrics.getItemSize() = widthPixels / MAX_NUM_OF_VISIBLE_ITEMS / density
+private fun DisplayMetrics.getItemSize(): Size {
+    val width = widthPixels / MAX_NUM_OF_VISIBLE_ITEMS / density
+    return Size(width, 1.5f * width)
+}
 
 private fun LazyListState.centralVisibleIndex() =
     firstVisibleItemIndex + MAX_NUM_OF_VISIBLE_ITEMS / 2
