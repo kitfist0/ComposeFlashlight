@@ -2,7 +2,8 @@ package app.flashlight.core
 
 import android.hardware.camera2.CameraManager
 import android.util.Log
-import app.flashlight.data.DataConstants
+import app.flashlight.data.Mode
+import app.flashlight.data.Mode.Companion.toDelay
 import app.flashlight.di.DefaultDispatcher
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class Flashlight @Inject constructor(
 
     private var cameraId = cameraManager.cameraIdList[0]
     private var flashlightEnabled = false
-    private var flashlightMode = DataConstants.DEFAULT_MODE
+    private var flashlightMode = Mode.DEFAULT_MODE
     private var torchEnabled = false
 
     init {
@@ -40,7 +41,7 @@ class Flashlight @Inject constructor(
         toggleIfNecessary()
     }
 
-    fun setMode(mode: Int) {
+    fun setMode(mode: Mode) {
         flashlightMode = mode
         toggleIfNecessary()
     }
@@ -52,11 +53,11 @@ class Flashlight @Inject constructor(
         if (flashlightEnabled) {
             Log.d(TAG, "start $flashlightMode")
             when (flashlightMode) {
-                DataConstants.DEFAULT_MODE -> toggleTorch(true)
+                Mode.DEFAULT_MODE -> toggleTorch(true)
                 else -> flickeringJob = launch {
                     while (true) {
                         toggleTorch(!torchEnabled)
-                        delay(flashlightMode.getDelay())
+                        delay(flashlightMode.toDelay())
                     }
                 }
             }
@@ -72,8 +73,7 @@ class Flashlight @Inject constructor(
         torchEnabled = false
     }
 
-    companion object {
-        private const val TAG = "FLASHLIGHT"
-        private fun Int.getDelay() = (DataConstants.MODES.size - this) * 100L
+    private companion object {
+        const val TAG = "FLASHLIGHT"
     }
 }

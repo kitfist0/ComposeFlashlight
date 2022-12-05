@@ -22,12 +22,12 @@ class DataStoreManager(appContext: Context) {
         preferences[FLASHLIGHT_ENABLED_KEY] ?: false
     }
 
-    suspend fun setMode(mode: Int) = dataStore.edit { preferences ->
-        preferences[MODE_KEY] = mode
+    suspend fun setMode(mode: Mode) = dataStore.edit { preferences ->
+        preferences[MODE_KEY] = mode.ordinal
     }
 
-    val mode: Flow<Int> = dataStore.data.map { preferences ->
-        preferences[MODE_KEY] ?: DataConstants.DEFAULT_MODE
+    val mode: Flow<Mode> = dataStore.data.map { preferences ->
+        Mode.values()[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal ]
     }
 
     companion object {

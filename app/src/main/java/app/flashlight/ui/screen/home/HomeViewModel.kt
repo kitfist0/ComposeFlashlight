@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.flashlight.core.*
 import app.flashlight.data.DataStoreManager
+import app.flashlight.data.Mode
 import app.flashlight.ui.navigation.NavDest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.palm.composestateevents.consumed
@@ -46,7 +47,7 @@ class HomeViewModel @Inject constructor(
         state = state.copy(navigationEvent = consumed())
     }
 
-    fun onModeSelected(mode: Int) {
+    fun onModeSelected(mode: Mode) {
         viewModelScope.launch {
             dataStoreManager.setMode(mode)
             flashlight.setMode(mode)

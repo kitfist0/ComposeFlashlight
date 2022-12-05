@@ -1,10 +1,8 @@
 package app.flashlight.ui.screen.home
 
-import android.util.DisplayMetrics
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,13 +22,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.flashlight.R
-import app.flashlight.data.DataConstants
+import app.flashlight.data.Mode
+import app.flashlight.ui.screen.home.HomeScreenState.Companion.getListCentralVisibleIndex
+import app.flashlight.ui.screen.home.HomeScreenState.Companion.getListInitialIndex
+import app.flashlight.ui.screen.home.HomeScreenState.Companion.getSelectedMode
+import app.flashlight.ui.screen.home.HomeScreenState.Companion.getSizeOfListItem
 import de.palm.composestateevents.EventEffect
 import kotlinx.coroutines.launch
 
-private const val MAX_NUM_OF_VISIBLE_ITEMS = 5
 private val SETTINGS_BUTTON_PADDING_TOP = 48.dp
 private val SETTINGS_BUTTON_SIZE = 48.dp
+
+private var previousFirstItemIndex = -1
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
@@ -55,14 +58,14 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel) {
 @Composable
 private fun HomeScreenContent(
     screenState: HomeScreenState,
-    onModeSelected: suspend (Int) -> Unit,
+    onModeSelected: suspend (Mode) -> Unit,
     onSettingsClicked: () -> Unit,
     onSwitchCheckedChanged: (Boolean) -> Unit,
 ) {
-    val items = CircularAdapter(screenState.modes)
-    val itemSize = LocalContext.current.resources.displayMetrics.getItemSize()
-    val lazyListState = rememberLazyListState(screenState.getFirstIndex())
-    val centralIndex = lazyListState.centralVisibleIndex()
+    val items = CircularAdapter(screenState.modesOrdinals, HomeScreenState.LIST_SIZE)
+    val itemSize = LocalContext.current.resources.displayMetrics.getSizeOfListItem()
+    val lazyListState = rememberLazyListState(screenState.getListInitialIndex())
+    val centralVisibleIndex = lazyListState.getListCentralVisibleIndex()
     val scope = rememberCoroutineScope()
 
     Column(
@@ -73,13 +76,16 @@ private fun HomeScreenContent(
                 HomeScreenItem(
                     itemSize = itemSize,
                     itemTitle = item.toString(),
-                    isCentralItem = index == centralIndex,
+                    isCentralItem = index == centralVisibleIndex,
                 )
             }
-            lazyListState.setOnScrollFinishedListener { firstIndex, selectedMode ->
-                scope.launch {
-                    lazyListState.animateScrollToItem(firstIndex)
-                    onModeSelected(selectedMode)
+            with(lazyListState) {
+                if (!isScrollInProgress && previousFirstItemIndex != firstVisibleItemIndex) {
+                    previousFirstItemIndex = firstVisibleItemIndex
+                    scope.launch {
+                        animateScrollToItem(firstVisibleItemIndex)
+                        onModeSelected(getSelectedMode())
+                    }
                 }
             }
         }
@@ -155,9 +161,10 @@ fun HomeScreenPreview() {
 }
 
 private class CircularAdapter(
-    private val content: List<Int>
+    private val content: List<Int>,
+    listSize: Int,
 ) : List<Int> {
-    override val size: Int = Int.MAX_VALUE
+    override val size: Int = listSize
     override fun contains(element: Int): Boolean = content.contains(element = element)
     override fun containsAll(elements: Collection<Int>): Boolean = content.containsAll(elements)
     override fun get(index: Int): Int = content[index % content.size]
@@ -169,26 +176,4 @@ private class CircularAdapter(
     override fun listIterator(index: Int): ListIterator<Int> = content.listIterator(index)
     override fun subList(fromIndex: Int, toIndex: Int): List<Int> =
         content.subList(fromIndex, toIndex)
-}
-
-private var previousFirstItemIndex = -1
-
-private fun HomeScreenState.getFirstIndex() = Int.MAX_VALUE / 2 + selectedMode - 2
-
-private fun DisplayMetrics.getItemSize(): Size {
-    val width = widthPixels / MAX_NUM_OF_VISIBLE_ITEMS / density
-    return Size(width, 1.5f * width)
-}
-
-private fun LazyListState.centralVisibleIndex() =
-    firstVisibleItemIndex + MAX_NUM_OF_VISIBLE_ITEMS / 2
-
-private fun LazyListState.setOnScrollFinishedListener(
-    onScrollFinished: (firstIndex: Int, selectedMode: Int) -> Unit
-) {
-    if (!isScrollInProgress && previousFirstItemIndex != firstVisibleItemIndex) {
-        previousFirstItemIndex = firstVisibleItemIndex
-        val mode = centralVisibleIndex() % DataConstants.MODES.size
-        onScrollFinished.invoke(firstVisibleItemIndex, mode)
-    }
 }
