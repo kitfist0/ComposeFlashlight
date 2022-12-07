@@ -19,5 +19,4 @@ If the Policy changes, the modification date below will be updated. The Policy m
 to time, so please be sure to check back periodically. If you have any questions about the Policy,
 please contact me via mdeveloperspost@gmail.com
 
-*KitFist0, MidnightDev*
-*06 December, 2022*
+*KitFist0, MidnightDev, 07 Dec 2022*
