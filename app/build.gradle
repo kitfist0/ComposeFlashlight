@@ -18,7 +18,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField 'String', 'GITHUB', '"https://github.com/kitfist0/ComposeFlashlight"'
-        buildConfigField 'String', 'LICENSE', '"https://github.com/kitfist0/ComposeFlashlight/blob/master/LICENSE"'
+        buildConfigField 'String', 'LICENSE', '"https://github.com/kitfist0/ComposeFlashlight/blob/master/POLICY.md"'
     }
 
     buildTypes {

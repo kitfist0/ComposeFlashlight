@@ -8,5 +8,5 @@ enum class SettingsItem(
 ) {
     THEME(R.drawable.ic_twotone_palette, R.string.theme),
     GITHUB(R.drawable.ic_twotone_github, R.string.github),
-    COPYRIGHT(R.drawable.ic_twotone_copyright, R.string.copyright),
+    POLICY(R.drawable.ic_twotone_policy, R.string.privacy_policy),
 }

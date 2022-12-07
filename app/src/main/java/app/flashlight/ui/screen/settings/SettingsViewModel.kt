@@ -29,7 +29,7 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
                 state.copy(longToastEvent = triggered("In developing ʕ•ᴥ•ʔ"))
             GITHUB ->
                 state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
-            COPYRIGHT ->
+            POLICY ->
                 state.copy(viewIntentEvent = triggered(BuildConfig.LICENSE))
         }
     }
