@@ -10,8 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,19 +62,19 @@ private fun SettingsScreenContent(
         item {
             Column(
                 modifier = Modifier
-                    .background(MaterialTheme.colors.surface)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(screenState.titleStringRes),
                     fontSize = 22.sp,
-                    color = MaterialTheme.colors.onBackground,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 Text(
                     text = screenState.versionNameText,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colors.onBackground,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
@@ -99,7 +99,7 @@ private fun SettingsScreenItem(
 ) {
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .clickable { onClick.invoke() }
             .fillMaxWidth()
     ) {
@@ -111,14 +111,14 @@ private fun SettingsScreenItem(
             Image(
                 painter = painterResource(iconRes),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
             )
             Text(
                 text = stringResource(titleRes),
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 22.sp,
                 modifier = Modifier
                     .padding(8.dp)

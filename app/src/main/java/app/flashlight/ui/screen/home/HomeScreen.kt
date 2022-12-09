@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +17,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -99,7 +102,7 @@ private fun HomeScreenContent(
             Image(
                 painter = painterResource(R.drawable.ic_twotone_settings),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 modifier = Modifier
                     .size(SETTINGS_BUTTON_SIZE)
                     .clickable { onSettingsClicked() }
@@ -116,7 +119,7 @@ private fun HomeScreenContent(
                 checked = screenState.switchChecked,
                 onCheckedChange = { checked -> onSwitchCheckedChanged(checked) },
                 modifier = Modifier
-                    .scale(5f)
+                    .scale(4f)
                     .rotate(270f)
             )
         }
@@ -130,8 +133,7 @@ private fun HomeScreenItem(
     isCentralItem: Boolean,
 ) {
     Card(
-        shape = RoundedCornerShape(0.dp),
-        backgroundColor = MaterialTheme.colors.surface,
+        shape = RectangleShape,
         modifier = Modifier
             .width(itemSize.width.dp)
             .height(itemSize.height.dp)
@@ -143,7 +145,7 @@ private fun HomeScreenItem(
         ) {
             Text(
                 text = itemTitle,
-                fontSize = if (isCentralItem) 24.sp else 20.sp
+                fontSize = if (isCentralItem) 28.sp else 20.sp
             )
         }
     }
