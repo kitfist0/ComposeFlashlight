@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.flashlight.R
 import app.flashlight.data.Mode
@@ -145,7 +144,11 @@ private fun HomeScreenItem(
         ) {
             Text(
                 text = itemTitle,
-                fontSize = if (isCentralItem) 28.sp else 20.sp
+                style = if (isCentralItem) {
+                    MaterialTheme.typography.displayLarge
+                } else {
+                    MaterialTheme.typography.displaySmall
+                }
             )
         }
     }

@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import de.palm.composestateevents.EventEffect
 
 @Composable
@@ -68,13 +67,11 @@ private fun SettingsScreenContent(
             ) {
                 Text(
                     text = stringResource(screenState.titleStringRes),
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
                     text = screenState.versionNameText,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleSmall,
                 )
             }
         }
@@ -111,15 +108,14 @@ private fun SettingsScreenItem(
             Image(
                 painter = painterResource(iconRes),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
             )
             Text(
                 text = stringResource(titleRes),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 22.sp,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
