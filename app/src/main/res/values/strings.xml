@@ -4,4 +4,7 @@
     <string name="github">GitHub</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="theme">Theme</string>
+    <string name="settings_source_code">Source code</string>
+    <string name="settings_switch_to_dark_mode">Switch to dark mode</string>
+    <string name="settings_switch_to_light_mode">Switch to light mode</string>
 </resources>
