@@ -30,8 +30,17 @@ class DataStoreManager(appContext: Context) {
         Mode.values()[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal ]
     }
 
-    companion object {
-        private val MODE_KEY = intPreferencesKey("mode")
-        private val FLASHLIGHT_ENABLED_KEY = booleanPreferencesKey("enabled")
+    suspend fun setDarkThemeEnabled(b: Boolean) = dataStore.edit { preferences ->
+        preferences[DARK_THEME_KEY] = b
+    }
+
+    val darkThemeEnabled: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[DARK_THEME_KEY] ?: false
+    }
+
+    private companion object {
+        val MODE_KEY = intPreferencesKey("mode")
+        val FLASHLIGHT_ENABLED_KEY = booleanPreferencesKey("enabled")
+        val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
     }
 }
