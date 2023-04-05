@@ -1,17 +1,21 @@
 package app.flashlight.ui.screen.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import app.flashlight.BuildConfig
+import app.flashlight.R
+import app.flashlight.data.DataStoreManager
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor() : ViewModel() {
+class SettingsViewModel @Inject constructor(
+    private val dataStoreManager: DataStoreManager,
+) : ViewModel() {
 
     private val _screenState = MutableStateFlow(SettingsScreenState())
     val screenState = _screenState.asStateFlow()
@@ -22,14 +26,28 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             _screenState.update { newState }
         }
 
+    init {
+        dataStoreManager.darkThemeEnabled
+            .onEach { isEnabled ->
+                val settingsItem = SettingItemState(
+                    if (isEnabled) R.drawable.ic_twotone_light_mode else R.drawable.ic_twotone_dark_mode,
+                    if (isEnabled) R.string.settings_switch_to_light_mode else R.string.settings_switch_to_dark_mode,
+                )
+                state = state.copy(themeSettingItem = settingsItem)
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun onSettingItemClicked(itemId: SettingItemId) {
-        state = when (itemId) {
-            SettingItemId.THEME ->
-                state.copy(longToastEvent = triggered("In developing ʕ•ᴥ•ʔ"))
+        when (itemId) {
+            SettingItemId.THEME -> viewModelScope.launch {
+                val darkThemeEnabled = dataStoreManager.darkThemeEnabled.first()
+                dataStoreManager.setDarkThemeEnabled(!darkThemeEnabled)
+            }
             SettingItemId.GITHUB ->
-                state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
+                state = state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
             SettingItemId.POLICY ->
-                state.copy(viewIntentEvent = triggered(BuildConfig.LICENSE))
+                state = state.copy(viewIntentEvent = triggered(BuildConfig.LICENSE))
         }
     }
 
