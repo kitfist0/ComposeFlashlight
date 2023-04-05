@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import app.flashlight.BuildConfig
-import app.flashlight.ui.screen.settings.SettingsItem.*
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,13 +22,13 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             _screenState.update { newState }
         }
 
-    fun onSettingsItemClicked(item: SettingsItem) {
-        state = when (item) {
-            THEME ->
+    fun onSettingItemClicked(itemId: SettingItemId) {
+        state = when (itemId) {
+            SettingItemId.THEME ->
                 state.copy(longToastEvent = triggered("In developing ʕ•ᴥ•ʔ"))
-            GITHUB ->
+            SettingItemId.GITHUB ->
                 state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
-            POLICY ->
+            SettingItemId.POLICY ->
                 state.copy(viewIntentEvent = triggered(BuildConfig.LICENSE))
         }
     }
