@@ -35,7 +35,7 @@ class DataStoreManager(appContext: Context) {
     }
 
     val darkThemeEnabled: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[DARK_THEME_KEY] ?: false
+        preferences[DARK_THEME_KEY] ?: true
     }
 
     private companion object {

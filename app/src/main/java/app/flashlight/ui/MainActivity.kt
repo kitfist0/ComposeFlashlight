@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val darkTheme = viewModel.darkTheme.collectAsState(initial = false)
+            val darkTheme = viewModel.darkTheme.collectAsState()
             ComposeFlashlightTheme(darkTheme.value) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
