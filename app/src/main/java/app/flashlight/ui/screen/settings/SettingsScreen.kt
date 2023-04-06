@@ -3,8 +3,6 @@ package app.flashlight.ui.screen.settings
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +30,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
     SettingsScreenContent(
         screenState = screenState,
-        onItemClicked = { item -> viewModel.onSettingsItemClicked(item) },
+        onItemClicked = { item -> viewModel.onSettingItemClicked(item) },
     )
 
     val context = LocalContext.current
@@ -53,7 +51,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 @Composable
 private fun SettingsScreenContent(
     screenState: SettingsScreenState,
-    onItemClicked: (SettingsItem) -> Unit,
+    onItemClicked: (SettingItemId) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -75,23 +73,30 @@ private fun SettingsScreenContent(
                 )
             }
         }
-
-        for (settingsItem in SettingsItem.values()) {
-            item {
-                SettingsScreenItem(
-                    titleRes = settingsItem.titleRes,
-                    iconRes = settingsItem.iconRes,
-                    onClick = { onItemClicked(settingsItem) },
-                )
-            }
+        item {
+            SettingsScreenItem(
+                settingItemState = screenState.themeSettingItem,
+                onClick = { onItemClicked.invoke(SettingItemId.THEME) },
+            )
+        }
+        item {
+            SettingsScreenItem(
+                settingItemState = screenState.githubSettingItem,
+                onClick = { onItemClicked.invoke(SettingItemId.GITHUB) },
+            )
+        }
+        item {
+            SettingsScreenItem(
+                settingItemState = screenState.policySettingItem,
+                onClick = { onItemClicked.invoke(SettingItemId.POLICY) },
+            )
         }
     }
 }
 
 @Composable
 private fun SettingsScreenItem(
-    @StringRes titleRes: Int,
-    @DrawableRes iconRes: Int,
+    settingItemState: SettingItemState,
     onClick: () -> Unit,
 ) {
     Column(
@@ -106,7 +111,7 @@ private fun SettingsScreenItem(
                 .height(60.dp)
         ) {
             Image(
-                painter = painterResource(iconRes),
+                painter = painterResource(settingItemState.iconRes),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                 modifier = Modifier
@@ -114,7 +119,7 @@ private fun SettingsScreenItem(
                     .align(Alignment.CenterVertically)
             )
             Text(
-                text = stringResource(titleRes),
+                text = stringResource(settingItemState.titleRes),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .padding(8.dp)
