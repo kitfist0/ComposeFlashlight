@@ -19,18 +19,24 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideCameraManager(app: Application): CameraManager {
-        return app.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
     }
 
     @Provides
     @Singleton
-    fun dataStoreManager(app: Application): DataStoreManager {
-        return DataStoreManager(app)
+    fun provideCameraManager(context: Context): CameraManager {
+        return context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
     }
 
-    @DefaultDispatcher
     @Provides
+    @Singleton
+    fun dataStoreManager(context: Context): DataStoreManager {
+        return DataStoreManager(context)
+    }
+
+    @Provides
+    @DefaultDispatcher
     fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }
 

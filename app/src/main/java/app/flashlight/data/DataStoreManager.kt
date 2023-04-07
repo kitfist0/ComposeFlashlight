@@ -7,10 +7,13 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private val Context.dataStore by preferencesDataStore("prefs")
 
-class DataStoreManager(appContext: Context) {
+@Singleton
+class DataStoreManager @Inject constructor(appContext: Context) {
 
     private val dataStore = appContext.dataStore
 
@@ -27,7 +30,7 @@ class DataStoreManager(appContext: Context) {
     }
 
     val mode: Flow<Mode> = dataStore.data.map { preferences ->
-        Mode.values()[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal ]
+        Mode.values()[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal]
     }
 
     suspend fun setDarkThemeEnabled(b: Boolean) = dataStore.edit { preferences ->
