@@ -1,11 +1,13 @@
 package app.flashlight.ui.screen.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -13,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Size
@@ -33,7 +36,8 @@ import de.palm.composestateevents.EventEffect
 import kotlinx.coroutines.launch
 
 private val SETTINGS_BUTTON_PADDING_TOP = 48.dp
-private val SETTINGS_BUTTON_SIZE = 48.dp
+private val SETTINGS_BUTTON_SIZE = 60.dp
+private val SETTINGS_BUTTON_ICON_SIZE = 48.dp
 
 private var previousFirstItemIndex = -1
 
@@ -98,14 +102,25 @@ private fun HomeScreenContent(
                 .fillMaxWidth()
                 .padding(top = SETTINGS_BUTTON_PADDING_TOP)
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_twotone_settings),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+            val shape = RoundedCornerShape(16.dp)
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(SETTINGS_BUTTON_SIZE)
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = shape
+                    )
+                    .clip(shape)
                     .clickable { onSettingsClicked() }
-            )
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_outline_settings),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                    modifier = Modifier.size(SETTINGS_BUTTON_ICON_SIZE)
+                )
+            }
         }
         Column(
             verticalArrangement = Arrangement.Center,
