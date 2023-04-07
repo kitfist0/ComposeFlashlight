@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 @Singleton
 class Flashlight @Inject constructor(
     private val cameraManager: CameraManager,
-    @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+    @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext = defaultDispatcher
@@ -67,10 +67,9 @@ class Flashlight @Inject constructor(
         }
     }
 
-    private fun toggleTorch(enabled: Boolean) = try {
-        cameraManager.setTorchMode(cameraId, enabled)
-    } catch (e: Exception) {
-        torchEnabled = false
+    private fun toggleTorch(enabled: Boolean) {
+        runCatching { cameraManager.setTorchMode(cameraId, enabled) }
+            .onFailure { torchEnabled = false }
     }
 
     private companion object {
