@@ -47,7 +47,7 @@ class SettingsViewModel @Inject constructor(
             SettingItemId.GITHUB ->
                 state = state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
             SettingItemId.POLICY ->
-                state = state.copy(viewIntentEvent = triggered(BuildConfig.LICENSE))
+                state = state.copy(viewIntentEvent = triggered(BuildConfig.POLICY))
         }
     }
 
