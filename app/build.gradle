@@ -6,14 +6,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     namespace 'app.flashlight'
 
     defaultConfig {
         applicationId "app.flashlight"
         minSdk 23
-        targetSdk 33
+        targetSdk 34
         versionCode 9
         versionName "0.9.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -35,11 +35,11 @@ android {
     }
 
     buildFeatures {
-        compose true
+        compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
 
     flavorDimensions "version"
@@ -58,23 +58,23 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.compose.ui:ui:1.4.3'
-    implementation 'androidx.compose.ui:ui-tooling:1.4.3'
-    implementation 'androidx.activity:activity-compose:1.7.2'
-    implementation 'androidx.compose.material3:material3:1.1.1'
-    implementation 'androidx.navigation:navigation-compose:2.6.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.compose.ui:ui:1.5.4'
+    implementation 'androidx.compose.ui:ui-tooling:1.5.4'
+    implementation 'androidx.activity:activity-compose:1.8.2'
+    implementation 'androidx.compose.material3:material3:1.1.2'
+    implementation 'androidx.navigation:navigation-compose:2.7.6'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2'
 
     // Compose-State-Events
-    implementation 'com.github.leonard-palm:compose-state-events:2.0.3'
+    implementation 'com.github.leonard-palm:compose-state-events:2.2.0'
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0'
 
     // DataStore
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
@@ -82,5 +82,5 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.4.3'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.5.4'
 }
