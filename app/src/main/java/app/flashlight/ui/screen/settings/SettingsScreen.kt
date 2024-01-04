@@ -81,6 +81,12 @@ private fun SettingsScreenContent(
         }
         item {
             SettingsScreenItem(
+                settingItemState = screenState.shutdownTimeoutItem,
+                onClick = {},
+            )
+        }
+        item {
+            SettingsScreenItem(
                 settingItemState = screenState.githubSettingItem,
                 onClick = { onItemClicked.invoke(SettingItemId.GITHUB) },
             )
