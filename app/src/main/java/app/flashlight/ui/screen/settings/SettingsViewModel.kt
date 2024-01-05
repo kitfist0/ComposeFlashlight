@@ -44,11 +44,17 @@ class SettingsViewModel @Inject constructor(
                 val darkThemeEnabled = dataStoreManager.darkThemeEnabled.first()
                 dataStoreManager.setDarkThemeEnabled(!darkThemeEnabled)
             }
+            SettingItemId.TIMEOUT ->
+                state = state.copy(bottomSheetEvent = triggered(longArrayOf(5, 10, 30, 60)))
             SettingItemId.GITHUB ->
                 state = state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
             SettingItemId.POLICY ->
                 state = state.copy(viewIntentEvent = triggered(BuildConfig.POLICY))
         }
+    }
+
+    fun onConsumedBottomSheetEvent() {
+        state = state.copy(bottomSheetEvent = consumed())
     }
 
     fun onConsumedToastEvent() {

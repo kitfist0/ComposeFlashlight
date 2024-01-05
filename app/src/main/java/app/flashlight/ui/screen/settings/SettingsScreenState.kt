@@ -27,6 +27,7 @@ data class SettingsScreenState(
     val policySettingItem: SettingItemState = SettingItemState(
         R.drawable.ic_twotone_policy, R.string.privacy_policy,
     ),
+    val bottomSheetEvent: StateEventWithContent<LongArray> = consumed(),
     val longToastEvent: StateEventWithContent<String> = consumed(),
     val viewIntentEvent: StateEventWithContent<String> = consumed(),
 )

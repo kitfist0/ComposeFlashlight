@@ -5,6 +5,7 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="theme">Theme</string>
     <string name="settings_shutdown_timeout">Shutdown timeout</string>
+    <string name="settings_shutdown_timeout_in_minutes">%s minutes</string>
     <string name="settings_source_code">Source code</string>
     <string name="settings_switch_to_dark_mode">Switch to dark mode</string>
     <string name="settings_switch_to_light_mode">Switch to light mode</string>
