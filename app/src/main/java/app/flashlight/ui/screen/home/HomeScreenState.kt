@@ -9,7 +9,7 @@ import de.palm.composestateevents.StateEventWithContent
 import de.palm.composestateevents.consumed
 
 data class HomeScreenState(
-    val modesOrdinals: List<Int> = Mode.values().map { it.ordinal },
+    val modesOrdinals: List<Int> = Mode.entries.map { it.ordinal },
     val selectedMode: Mode = Mode.DEFAULT_MODE,
     val switchChecked: Boolean = false,
     val navigationEvent: StateEventWithContent<NavDest> = consumed(),
@@ -34,8 +34,8 @@ data class HomeScreenState(
         }
 
         fun LazyListState.getSelectedMode(): Mode {
-            val ordinal = getListCentralVisibleIndex() % Mode.values().size
-            return Mode.values()[ordinal]
+            val ordinal = getListCentralVisibleIndex() % Mode.entries.size
+            return Mode.entries[ordinal]
         }
     }
 }
