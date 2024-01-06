@@ -11,12 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,13 +28,12 @@ import androidx.compose.ui.unit.dp
 import app.flashlight.R
 import de.palm.composestateevents.EventEffect
 import de.palm.composestateevents.StateEventWithContentTriggered
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
 
     val screenState: SettingsScreenState by viewModel.screenState.collectAsState()
-    val bottomSheetState = rememberModalBottomSheetState()
 
     SettingsScreenContent(
         screenState = screenState,
@@ -44,11 +43,9 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val context = LocalContext.current
     (screenState.bottomSheetEvent as? StateEventWithContentTriggered<LongArray>)?.let { event ->
         SettingsScreenModalBottomSheet(
-            onDismissRequest = { viewModel.onConsumedBottomSheetEvent() },
-            sheetState = bottomSheetState,
+            onDismiss = { viewModel.onConsumedBottomSheetEvent() },
             items = event.content.toList(),
             itemText = stringResource(R.string.settings_shutdown_timeout_in_minutes),
-            onItemClicked = {},
         )
     }
     EventEffect(
@@ -155,14 +152,14 @@ private fun SettingsScreenItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun <T> SettingsScreenModalBottomSheet(
-    onDismissRequest: () -> Unit,
-    sheetState: SheetState,
+    onDismiss: () -> Unit,
     items: List<T>,
     itemText: String,
-    onItemClicked: (T) -> Unit,
 ) {
+    val sheetState = rememberModalBottomSheetState()
+    val coroutineScope = rememberCoroutineScope()
     ModalBottomSheet(
-        onDismissRequest = { onDismissRequest.invoke() },
+        onDismissRequest = { onDismiss.invoke() },
         sheetState = sheetState,
     ) {
         Column(modifier = Modifier.padding(bottom = 32.dp)) {
@@ -171,7 +168,13 @@ private fun <T> SettingsScreenModalBottomSheet(
                     text = itemText.format(it),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
-                        .clickable { onItemClicked.invoke(it) }
+                        .clickable {
+                            coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    onDismiss.invoke()
+                                }
+                            }
+                        }
                         .fillMaxWidth()
                         .padding(16.dp)
                 )
