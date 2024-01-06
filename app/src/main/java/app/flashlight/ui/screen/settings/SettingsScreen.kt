@@ -42,19 +42,23 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
     val context = LocalContext.current
     (screenState.bottomSheetEvent as? StateEventWithContentTriggered<LongArray>)?.let { event ->
-        val values = event.content
+        val items = event.content
+        val navBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
         ModalBottomSheet(
             onDismissRequest = { viewModel.onConsumedBottomSheetEvent() },
             sheetState = bottomSheetState,
         ) {
-            values.forEach {
-                Text(
-                    text = stringResource(R.string.settings_shutdown_timeout_in_minutes).format(it),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                )
+            Column(modifier = Modifier.padding(bottom = navBarHeight)) {
+                items.forEach {
+                    Text(
+                        text = stringResource(R.string.settings_shutdown_timeout_in_minutes).format(it),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .clickable { }
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                }
             }
         }
     }
