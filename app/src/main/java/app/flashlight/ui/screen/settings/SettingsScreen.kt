@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -42,25 +43,13 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
     val context = LocalContext.current
     (screenState.bottomSheetEvent as? StateEventWithContentTriggered<LongArray>)?.let { event ->
-        val items = event.content
-        val navBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-        ModalBottomSheet(
+        SettingsScreenModalBottomSheet(
             onDismissRequest = { viewModel.onConsumedBottomSheetEvent() },
             sheetState = bottomSheetState,
-        ) {
-            Column(modifier = Modifier.padding(bottom = navBarHeight)) {
-                items.forEach {
-                    Text(
-                        text = stringResource(R.string.settings_shutdown_timeout_in_minutes).format(it),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .clickable { }
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
-                }
-            }
-        }
+            items = event.content.toList(),
+            itemText = stringResource(R.string.settings_shutdown_timeout_in_minutes),
+            onItemClicked = {},
+        )
     }
     EventEffect(
         event = screenState.viewIntentEvent,
@@ -159,6 +148,34 @@ private fun SettingsScreenItem(
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun <T> SettingsScreenModalBottomSheet(
+    onDismissRequest: () -> Unit,
+    sheetState: SheetState,
+    items: List<T>,
+    itemText: String,
+    onItemClicked: (T) -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = { onDismissRequest.invoke() },
+        sheetState = sheetState,
+    ) {
+        Column(modifier = Modifier.padding(bottom = 32.dp)) {
+            items.forEach {
+                Text(
+                    text = itemText.format(it),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .clickable { onItemClicked.invoke(it) }
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+            }
         }
     }
 }
