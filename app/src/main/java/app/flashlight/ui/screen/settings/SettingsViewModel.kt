@@ -59,6 +59,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun onTimeoutValueSelected(timeout: Long) {
+        viewModelScope.launch {
+            dataStoreManager.setShutdownTimeout(timeout)
+        }
+    }
+
     fun onConsumedTimeoutBottomSheetEvent() {
         state = state.copy(timeoutBottomSheetEvent = consumed())
     }

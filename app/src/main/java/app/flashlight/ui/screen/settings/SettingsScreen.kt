@@ -47,7 +47,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             selectedValue = event.content.selectedValue,
             allValues = event.content.allValues,
             commonTextForEachValue = stringResource(R.string.settings_shutdown_timeout_in_minutes),
-            onValueClicked = {}
+            onValueSelected = { viewModel.onTimeoutValueSelected(it) }
         )
     }
     EventEffect(
@@ -158,7 +158,7 @@ private fun <T> SettingsScreenSingleChoiceSheet(
     selectedValue: T,
     allValues: List<T>,
     commonTextForEachValue: String,
-    onValueClicked: (T) -> Unit,
+    onValueSelected: (T) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
@@ -179,7 +179,7 @@ private fun <T> SettingsScreenSingleChoiceSheet(
                     color = textColor,
                     modifier = Modifier
                         .clickable {
-                            onValueClicked.invoke(value)
+                            onValueSelected.invoke(value)
                             coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
                                 if (!sheetState.isVisible) {
                                     onDismiss.invoke()
