@@ -34,6 +34,8 @@ class DataStoreManager @Inject constructor(appContext: Context) {
         Mode.entries[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal]
     }
 
+    val allTimeoutValues = listOf(5, 10, 30, 60, Long.MAX_VALUE)
+
     suspend fun setShutdownTimeout(timeout: Long) = dataStore.edit { preferences ->
         preferences[SHUTDOWN_TIMEOUT_KEY] = timeout
     }
