@@ -12,6 +12,11 @@ data class SettingItemState(
     @StringRes val titleRes: Int,
 )
 
+data class SingleChoiceSheetState<T>(
+    val selectedValue: T,
+    val allValues: List<T>,
+)
+
 data class SettingsScreenState(
     @StringRes val titleStringRes: Int = R.string.app_name,
     val versionNameText: String = "ver.${BuildConfig.VERSION_NAME}",
@@ -27,7 +32,7 @@ data class SettingsScreenState(
     val policySettingItem: SettingItemState = SettingItemState(
         R.drawable.ic_twotone_policy, R.string.privacy_policy,
     ),
-    val bottomSheetEvent: StateEventWithContent<LongArray> = consumed(),
+    val timeoutBottomSheetEvent: StateEventWithContent<SingleChoiceSheetState<Long>> = consumed(),
     val longToastEvent: StateEventWithContent<String> = consumed(),
     val viewIntentEvent: StateEventWithContent<String> = consumed(),
 )

@@ -45,7 +45,13 @@ class SettingsViewModel @Inject constructor(
                 dataStoreManager.setDarkThemeEnabled(!darkThemeEnabled)
             }
             SettingItemId.TIMEOUT ->
-                state = state.copy(bottomSheetEvent = triggered(longArrayOf(5, 10, 30, 60)))
+                viewModelScope.launch {
+                    val selectedValue = dataStoreManager.shutdownTimeout.first()
+                    val allValues = dataStoreManager.allTimeoutValues
+                    state = state.copy(
+                        timeoutBottomSheetEvent = triggered(SingleChoiceSheetState(selectedValue, allValues))
+                    )
+                }
             SettingItemId.GITHUB ->
                 state = state.copy(viewIntentEvent = triggered(BuildConfig.GITHUB))
             SettingItemId.POLICY ->
@@ -53,8 +59,8 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onConsumedBottomSheetEvent() {
-        state = state.copy(bottomSheetEvent = consumed())
+    fun onConsumedTimeoutBottomSheetEvent() {
+        state = state.copy(timeoutBottomSheetEvent = consumed())
     }
 
     fun onConsumedToastEvent() {

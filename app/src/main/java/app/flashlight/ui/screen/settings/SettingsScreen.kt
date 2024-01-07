@@ -41,11 +41,13 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     )
 
     val context = LocalContext.current
-    (screenState.bottomSheetEvent as? StateEventWithContentTriggered<LongArray>)?.let { event ->
-        SettingsScreenModalBottomSheet(
-            onDismiss = { viewModel.onConsumedBottomSheetEvent() },
-            items = event.content.toList(),
-            itemText = stringResource(R.string.settings_shutdown_timeout_in_minutes),
+    (screenState.timeoutBottomSheetEvent as? StateEventWithContentTriggered<SingleChoiceSheetState<Long>>)?.let { event ->
+        SettingsScreenSingleChoiceSheet(
+            onDismiss = viewModel::onConsumedTimeoutBottomSheetEvent,
+            selectedValue = event.content.selectedValue,
+            allValues = event.content.allValues,
+            commonTextForEachValue = stringResource(R.string.settings_shutdown_timeout_in_minutes),
+            onValueClicked = {}
         )
     }
     EventEffect(
@@ -151,10 +153,12 @@ private fun SettingsScreenItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun <T> SettingsScreenModalBottomSheet(
+private fun <T> SettingsScreenSingleChoiceSheet(
     onDismiss: () -> Unit,
-    items: List<T>,
-    itemText: String,
+    selectedValue: T,
+    allValues: List<T>,
+    commonTextForEachValue: String,
+    onValueClicked: (T) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
@@ -163,12 +167,19 @@ private fun <T> SettingsScreenModalBottomSheet(
         sheetState = sheetState,
     ) {
         Column(modifier = Modifier.padding(bottom = 32.dp)) {
-            items.forEach {
+            allValues.forEach { value ->
+                val textColor = if (selectedValue == value) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
                 Text(
-                    text = itemText.format(it),
+                    text = commonTextForEachValue.format(value),
                     style = MaterialTheme.typography.bodyLarge,
+                    color = textColor,
                     modifier = Modifier
                         .clickable {
+                            onValueClicked.invoke(value)
                             coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
                                 if (!sheetState.isVisible) {
                                     onDismiss.invoke()
