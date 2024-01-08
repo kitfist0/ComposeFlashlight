@@ -7,6 +7,7 @@ import javax.inject.Inject
 import app.flashlight.BuildConfig
 import app.flashlight.R
 import app.flashlight.data.DataStoreManager
+import app.flashlight.data.Timeout
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.*
@@ -46,8 +47,8 @@ class SettingsViewModel @Inject constructor(
             }
             SettingItemId.TIMEOUT ->
                 viewModelScope.launch {
-                    val selectedValue = dataStoreManager.shutdownTimeout.first()
-                    val allValues = dataStoreManager.allTimeoutValues
+                    val selectedValue = dataStoreManager.shutdownTimeout.first().valueInMinutes
+                    val allValues = Timeout.entries.map { it.valueInMinutes }
                     state = state.copy(
                         timeoutBottomSheetEvent = triggered(SingleChoiceSheetState(selectedValue, allValues))
                     )
@@ -61,7 +62,8 @@ class SettingsViewModel @Inject constructor(
 
     fun onTimeoutValueSelected(timeout: Long) {
         viewModelScope.launch {
-            dataStoreManager.setShutdownTimeout(timeout)
+            Timeout.entries.find { it.valueInMinutes == timeout }
+                ?.let { dataStoreManager.setShutdownTimeout(it) }
         }
     }
 

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,14 +33,12 @@ class DataStoreManager @Inject constructor(appContext: Context) {
         Mode.entries[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal]
     }
 
-    val allTimeoutValues = listOf(5, 10, 30, 60, Long.MAX_VALUE)
-
-    suspend fun setShutdownTimeout(timeout: Long) = dataStore.edit { preferences ->
-        preferences[SHUTDOWN_TIMEOUT_KEY] = timeout
+    suspend fun setShutdownTimeout(timeout: Timeout) = dataStore.edit { preferences ->
+        preferences[SHUTDOWN_TIMEOUT_KEY] = timeout.ordinal
     }
 
-    val shutdownTimeout: Flow<Long> = dataStore.data.map { preferences ->
-        preferences[SHUTDOWN_TIMEOUT_KEY] ?: Long.MAX_VALUE
+    val shutdownTimeout: Flow<Timeout> = dataStore.data.map { preferences ->
+        Timeout.entries[preferences[SHUTDOWN_TIMEOUT_KEY] ?: Timeout.DEFAULT_TIMEOUT.ordinal]
     }
 
     suspend fun setDarkThemeEnabled(b: Boolean) = dataStore.edit { preferences ->
@@ -55,7 +52,7 @@ class DataStoreManager @Inject constructor(appContext: Context) {
     private companion object {
         val MODE_KEY = intPreferencesKey("mode")
         val FLASHLIGHT_ENABLED_KEY = booleanPreferencesKey("enabled")
-        val SHUTDOWN_TIMEOUT_KEY = longPreferencesKey("shutdown_timeout")
+        val SHUTDOWN_TIMEOUT_KEY = intPreferencesKey("shutdown_timeout")
         val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
     }
 }
