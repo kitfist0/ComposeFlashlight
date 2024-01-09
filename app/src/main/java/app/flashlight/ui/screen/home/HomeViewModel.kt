@@ -2,7 +2,7 @@ package app.flashlight.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.flashlight.core.*
+import app.flashlight.core.Flashlight
 import app.flashlight.data.DataStoreManager
 import app.flashlight.data.Mode
 import app.flashlight.ui.navigation.NavDest
@@ -29,14 +29,18 @@ class HomeViewModel @Inject constructor(
         }
 
     init {
-        combine(dataStoreManager.mode, dataStoreManager.flashlightEnabled) { mode, enabled ->
-            mode to enabled
-        }.onEach {
-            state = state.copy(
-                selectedMode = it.first,
-                switchChecked = it.second,
-            )
-        }.launchIn(viewModelScope)
+        flashlight.start()
+        dataStoreManager.flashlightEnabled
+            .onEach { state = state.copy(switchChecked = it) }
+            .launchIn(viewModelScope)
+        dataStoreManager.mode
+            .onEach { state = state.copy(selectedMode = it) }
+            .launchIn(viewModelScope)
+    }
+
+    override fun onCleared() {
+        flashlight.stop()
+        super.onCleared()
     }
 
     fun onSettingsButtonClicked() {
@@ -50,14 +54,12 @@ class HomeViewModel @Inject constructor(
     fun onModeSelected(mode: Mode) {
         viewModelScope.launch {
             dataStoreManager.setMode(mode)
-            flashlight.setMode(mode)
         }
     }
 
     fun onSwitchCheckedChanged(checked: Boolean) {
         viewModelScope.launch {
             dataStoreManager.setFlashlightEnabled(checked)
-            flashlight.toggle(checked)
         }
     }
 }
