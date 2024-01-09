@@ -6,7 +6,7 @@ import app.flashlight.data.DataStoreManager
 import app.flashlight.data.Mode
 import app.flashlight.data.Mode.Companion.toDelay
 import app.flashlight.data.Timeout
-import app.flashlight.di.DefaultDispatcher
+import app.flashlight.di.MainDispatcher
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -18,10 +18,10 @@ import kotlin.coroutines.CoroutineContext
 class Flashlight @Inject constructor(
     private val cameraManager: CameraManager,
     private val dataStoreManager: DataStoreManager,
-    @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+    @MainDispatcher coroutineDispatcher: CoroutineDispatcher,
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = defaultDispatcher
+    override val coroutineContext: CoroutineContext = coroutineDispatcher
 
     private var flashlightJob: Job? = null
 
