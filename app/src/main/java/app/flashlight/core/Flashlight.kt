@@ -6,6 +6,7 @@ import app.flashlight.data.DataStoreManager
 import app.flashlight.data.Mode
 import app.flashlight.data.Mode.Companion.toDelay
 import app.flashlight.data.Timeout
+import app.flashlight.data.Timeout.Companion.toMillis
 import app.flashlight.di.MainDispatcher
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.combine
@@ -58,7 +59,7 @@ class Flashlight @Inject constructor(
     private fun CameraManager.launchFlashlightJob(mode: Mode, timeout: Timeout): Job {
         Log.d(TAG, "launch flashlight job in mode $mode for ${timeout.valueInMinutes} minutes")
         val cameraId = cameraIdList.first()
-        val timeoutMillis = timeout.valueInMinutes * ONE_MINUTE_IN_MILLISECONDS
+        val timeoutMillis = timeout.toMillis()
         return launch {
             if (mode == Mode.MODE_0) {
                 setTorchMode(cameraId, true)
@@ -80,6 +81,5 @@ class Flashlight @Inject constructor(
 
     private companion object {
         const val TAG = "FLASHLIGHT"
-        const val ONE_MINUTE_IN_MILLISECONDS = 60_000L
     }
 }

@@ -9,5 +9,7 @@ enum class Timeout(val valueInMinutes: Long) {
 
     companion object {
         val DEFAULT_TIMEOUT = ENDLESS_MINUTES
+
+        fun Timeout.toMillis(): Long = valueInMinutes * 60_000
     }
 }
