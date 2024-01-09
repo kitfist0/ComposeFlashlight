@@ -5,10 +5,10 @@ enum class Timeout(val valueInMinutes: Long) {
     TEN_MINUTES(10),
     THIRTY_MINUTES(30),
     SIXTY_MINUTES(60),
-    ENDLESS_MINUTES(Long.MAX_VALUE / 60_000);
+    THOUSAND_MINUTES(1000);
 
     companion object {
-        val DEFAULT_TIMEOUT = ENDLESS_MINUTES
+        val DEFAULT_TIMEOUT = THOUSAND_MINUTES
 
         fun Timeout.toMillis(): Long = valueInMinutes * 60_000
     }
