@@ -43,6 +43,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val context = LocalContext.current
     (screenState.timeoutBottomSheetEvent as? StateEventWithContentTriggered<SingleChoiceSheetState<Long>>)?.let { event ->
         SettingsScreenSingleChoiceSheet(
+            title = stringResource(R.string.settings_shutdown_timeout_bottom_sheet_title),
             onDismiss = viewModel::onConsumedTimeoutBottomSheetEvent,
             selectedValue = event.content.selectedValue,
             allValues = event.content.allValues,
@@ -154,6 +155,7 @@ private fun SettingsScreenItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun <T> SettingsScreenSingleChoiceSheet(
+    title: String,
     onDismiss: () -> Unit,
     selectedValue: T,
     allValues: List<T>,
@@ -166,6 +168,13 @@ private fun <T> SettingsScreenSingleChoiceSheet(
         onDismissRequest = { onDismiss.invoke() },
         sheetState = sheetState,
     ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
         Column(modifier = Modifier.padding(bottom = 32.dp)) {
             allValues.forEach { value ->
                 val textColor = if (selectedValue == value) {
