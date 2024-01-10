@@ -15,6 +15,6 @@ enum class Mode {
 
     companion object {
         val DEFAULT_MODE = MODE_0
-        fun Mode.toDelay() = (values().size - ordinal) * 100L
+        fun Mode.toDelay() = (entries.size - ordinal) * 100L
     }
 }
