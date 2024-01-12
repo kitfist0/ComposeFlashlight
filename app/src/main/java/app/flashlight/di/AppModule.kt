@@ -36,10 +36,10 @@ object AppModule {
     }
 
     @Provides
-    @DefaultDispatcher
-    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    @MainDispatcher
+    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class DefaultDispatcher
+annotation class MainDispatcher

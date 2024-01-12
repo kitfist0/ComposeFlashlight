@@ -8,11 +8,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -21,7 +25,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.flashlight.R
 import de.palm.composestateevents.EventEffect
+import de.palm.composestateevents.StateEventWithContentTriggered
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
@@ -34,6 +41,16 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     )
 
     val context = LocalContext.current
+    (screenState.timeoutBottomSheetEvent as? StateEventWithContentTriggered<SingleChoiceSheetState<Long>>)?.let { event ->
+        SettingsScreenSingleChoiceSheet(
+            title = stringResource(R.string.settings_shutdown_timeout_bottom_sheet_title),
+            onDismiss = viewModel::onConsumedTimeoutBottomSheetEvent,
+            selectedValue = event.content.selectedValue,
+            allValues = event.content.allValues,
+            commonTextForEachValue = stringResource(R.string.settings_shutdown_timeout_in_minutes),
+            onValueSelected = { viewModel.onTimeoutValueSelected(it) }
+        )
+    }
     EventEffect(
         event = screenState.viewIntentEvent,
         onConsumed = viewModel::onConsumedViewIntentEvent,
@@ -77,6 +94,12 @@ private fun SettingsScreenContent(
             SettingsScreenItem(
                 settingItemState = screenState.themeSettingItem,
                 onClick = { onItemClicked.invoke(SettingItemId.THEME) },
+            )
+        }
+        item {
+            SettingsScreenItem(
+                settingItemState = screenState.shutdownTimeoutItem,
+                onClick = { onItemClicked.invoke(SettingItemId.TIMEOUT) },
             )
         }
         item {
@@ -125,6 +148,57 @@ private fun SettingsScreenItem(
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun <T> SettingsScreenSingleChoiceSheet(
+    title: String,
+    onDismiss: () -> Unit,
+    selectedValue: T,
+    allValues: List<T>,
+    commonTextForEachValue: String,
+    onValueSelected: (T) -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val coroutineScope = rememberCoroutineScope()
+    ModalBottomSheet(
+        onDismissRequest = { onDismiss.invoke() },
+        sheetState = sheetState,
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+        Column(modifier = Modifier.padding(bottom = 32.dp)) {
+            allValues.forEach { value ->
+                val textColor = if (selectedValue == value) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
+                Text(
+                    text = commonTextForEachValue.format(value),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColor,
+                    modifier = Modifier
+                        .clickable {
+                            onValueSelected.invoke(value)
+                            coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    onDismiss.invoke()
+                                }
+                            }
+                        }
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+            }
         }
     }
 }

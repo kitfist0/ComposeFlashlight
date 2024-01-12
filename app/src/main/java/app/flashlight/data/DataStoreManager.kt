@@ -30,7 +30,15 @@ class DataStoreManager @Inject constructor(appContext: Context) {
     }
 
     val mode: Flow<Mode> = dataStore.data.map { preferences ->
-        Mode.values()[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal]
+        Mode.entries[preferences[MODE_KEY] ?: Mode.DEFAULT_MODE.ordinal]
+    }
+
+    suspend fun setShutdownTimeout(timeout: Timeout) = dataStore.edit { preferences ->
+        preferences[SHUTDOWN_TIMEOUT_KEY] = timeout.ordinal
+    }
+
+    val shutdownTimeout: Flow<Timeout> = dataStore.data.map { preferences ->
+        Timeout.entries[preferences[SHUTDOWN_TIMEOUT_KEY] ?: Timeout.DEFAULT_TIMEOUT.ordinal]
     }
 
     suspend fun setDarkThemeEnabled(b: Boolean) = dataStore.edit { preferences ->
@@ -44,6 +52,7 @@ class DataStoreManager @Inject constructor(appContext: Context) {
     private companion object {
         val MODE_KEY = intPreferencesKey("mode")
         val FLASHLIGHT_ENABLED_KEY = booleanPreferencesKey("enabled")
+        val SHUTDOWN_TIMEOUT_KEY = intPreferencesKey("shutdown_timeout")
         val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
     }
 }

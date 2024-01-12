@@ -2,10 +2,15 @@ package app.flashlight.core
 
 import android.hardware.camera2.CameraManager
 import android.util.Log
+import app.flashlight.data.DataStoreManager
 import app.flashlight.data.Mode
 import app.flashlight.data.Mode.Companion.toDelay
-import app.flashlight.di.DefaultDispatcher
+import app.flashlight.data.Timeout
+import app.flashlight.data.Timeout.Companion.toMillis
+import app.flashlight.di.MainDispatcher
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
@@ -13,63 +18,65 @@ import kotlin.coroutines.CoroutineContext
 @Singleton
 class Flashlight @Inject constructor(
     private val cameraManager: CameraManager,
-    @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+    private val dataStoreManager: DataStoreManager,
+    @MainDispatcher coroutineDispatcher: CoroutineDispatcher,
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = defaultDispatcher
-    private var flickeringJob: Job? = null
+    override val coroutineContext: CoroutineContext = coroutineDispatcher
 
-    private var cameraId = cameraManager.cameraIdList[0]
-    private var flashlightEnabled = false
-    private var flashlightMode = Mode.DEFAULT_MODE
-    private var torchEnabled = false
+    private var flashlightJob: Job? = null
 
-    init {
-        cameraManager.registerTorchCallback(
-            object : CameraManager.TorchCallback() {
-                override fun onTorchModeChanged(cameraId: String, enabled: Boolean) {
-                    super.onTorchModeChanged(cameraId, enabled)
-                    torchEnabled = enabled
-                }
-            },
-            null
-        )
-    }
-
-    fun toggle(enabled: Boolean) {
-        flashlightEnabled = enabled
-        toggleIfNecessary()
-    }
-
-    fun setMode(mode: Mode) {
-        flashlightMode = mode
-        toggleIfNecessary()
-    }
-
-    private fun toggleIfNecessary() {
-
-        flickeringJob?.cancel()
-
-        if (flashlightEnabled) {
-            Log.d(TAG, "start $flashlightMode")
-            when (flashlightMode) {
-                Mode.DEFAULT_MODE -> toggleTorch(true)
-                else -> flickeringJob = launch {
-                    while (true) {
-                        toggleTorch(!torchEnabled)
-                        delay(flashlightMode.toDelay())
-                    }
-                }
+    fun start() {
+        combine(
+            dataStoreManager.flashlightEnabled,
+            dataStoreManager.mode,
+            dataStoreManager.shutdownTimeout,
+        ) { enabled, mode, timeout ->
+            cancelFlashlightJob()
+            if (enabled) {
+                flashlightJob = cameraManager.launchFlashlightJob(mode, timeout)
             }
-        } else {
-            Log.d(TAG, "stop")
-            toggleTorch(false)
+        }.launchIn(this)
+    }
+
+    fun stop() {
+        cancelFlashlightJob()
+        launch {
+            dataStoreManager.setFlashlightEnabled(false)
         }
     }
 
-    private fun toggleTorch(enabled: Boolean) {
-        runCatching { cameraManager.setTorchMode(cameraId, enabled) }
-            .onFailure { torchEnabled = false }
+    private fun cancelFlashlightJob() {
+        val cameraId = cameraManager.cameraIdList.first()
+        cameraManager.setTorchMode(cameraId, false)
+        flashlightJob?.let { job ->
+            Log.d(TAG, "cancel flashlight job")
+            job.cancel()
+            flashlightJob = null
+        }
+    }
+
+    private fun CameraManager.launchFlashlightJob(mode: Mode, timeout: Timeout): Job {
+        Log.d(TAG, "launch flashlight job in mode $mode for ${timeout.valueInMinutes} minutes")
+        val cameraId = cameraIdList.first()
+        val timeoutMillis = timeout.toMillis()
+        return launch {
+            if (mode == Mode.MODE_0) {
+                setTorchMode(cameraId, true)
+                delay(timeoutMillis)
+            } else {
+                val startTime = System.currentTimeMillis()
+                var torchEnabled = true
+                while (System.currentTimeMillis() - startTime < timeoutMillis) {
+                    setTorchMode(cameraId, torchEnabled)
+                    Log.d(TAG, "torch is " + if (torchEnabled) "on" else "off")
+                    delay(mode.toDelay())
+                    torchEnabled = !torchEnabled
+                }
+            }
+            Log.d(TAG, "time is out")
+            stop()
+        }
     }
 
     private companion object {
