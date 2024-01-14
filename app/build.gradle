@@ -43,7 +43,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.7"
     }
 
-    flavorDimensions "version"
+    flavorDimensions = ["version"]
 
     productFlavors {
         demo {
@@ -54,6 +54,16 @@ android {
         midnight {
             dimension "version"
             applicationId "midnight.flashlight"
+        }
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            def flavorName = variant.flavorName
+            def versionCode = variant.versionCode
+            def versionName = variant.versionName
+            def buildType = variant.buildType.name
+            outputFileName = "${flavorName}-${versionCode}(${versionName})-${buildType}.apk"
         }
     }
 }
