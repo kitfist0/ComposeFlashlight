@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Lanterna</string>
+    <string name="privacy_policy">Política de Privacidade</string>
+    <string name="settings_shutdown_timeout">Tempo limite de desligamento</string>
+    <string name="settings_shutdown_timeout_bottom_sheet_title">Tempo limite de desligamento da lanterna</string>
+    <string name="settings_shutdown_timeout_in_minutes">%s minutos</string>
+    <string name="settings_source_code">Código fonte</string>
+    <string name="settings_switch_to_dark_mode">Mudar para tema escuro</string>
+    <string name="settings_switch_to_light_mode">Mudar para tema claro</string>
+</resources>

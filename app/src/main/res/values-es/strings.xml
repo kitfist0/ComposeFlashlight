@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Linterna</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="settings_shutdown_timeout">Tiempo de espera de apagado</string>
+    <string name="settings_shutdown_timeout_bottom_sheet_title">Tiempo de espera para apagar la linterna</string>
+    <string name="settings_shutdown_timeout_in_minutes">%s minutos</string>
+    <string name="settings_source_code">Código fuente</string>
+    <string name="settings_switch_to_dark_mode">Cambiar al tema oscuro</string>
+    <string name="settings_switch_to_light_mode">Cambiar al tema claro</string>
+</resources>
