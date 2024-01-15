@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Taschenlampe</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
+    <string name="settings_shutdown_timeout">Zeitüberschreitung beim Herunterfahren</string>
+    <string name="settings_shutdown_timeout_bottom_sheet_title">Zeitüberschreitung beim Herunterfahren der Taschenlampe</string>
+    <string name="settings_shutdown_timeout_in_minutes">%s Minuten</string>
+    <string name="settings_source_code">Quellcode</string>
+    <string name="settings_switch_to_dark_mode">Dunkles Thema aktivieren</string>
+    <string name="settings_switch_to_light_mode">Helles Thema aktivieren</string>
+</resources>

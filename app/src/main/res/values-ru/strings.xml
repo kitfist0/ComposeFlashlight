@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Фонарик</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_shutdown_timeout">Таймаут отключения</string>
+    <string name="settings_shutdown_timeout_bottom_sheet_title">Таймаут отключения фонарика</string>
+    <string name="settings_shutdown_timeout_in_minutes">%s минут</string>
+    <string name="settings_source_code">Исходный код</string>
+    <string name="settings_switch_to_dark_mode">Включить темную тему</string>
+    <string name="settings_switch_to_light_mode">Включить светлую тему</string>
+</resources>

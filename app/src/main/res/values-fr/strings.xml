@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Lampe de Poche</string>
+    <string name="privacy_policy">Politique de Confidentialité</string>
+    <string name="settings_shutdown_timeout">Délai d\'arrêt</string>
+    <string name="settings_shutdown_timeout_bottom_sheet_title">Délai d\'arrêt de la lampe de poche</string>
+    <string name="settings_shutdown_timeout_in_minutes">%s minutes</string>
+    <string name="settings_source_code">Code source</string>
+    <string name="settings_switch_to_dark_mode">Passer au thème sombre</string>
+    <string name="settings_switch_to_light_mode">Passer au thème clair</string>
+</resources>
